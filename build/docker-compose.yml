@@ -1,0 +1,10 @@
+version: '2'
+services:
+  api:
+    image: api
+    container_name: api
+    build:
+      context: ../
+      dockerfile: ./build/api/Dockerfile
+    ports:
+      - "127.0.0.1:8080:8080"
