@@ -1,0 +1,2 @@
+CREATE USER 'app'@'%' IDENTIFIED BY 'password';
+GRANT SELECT,INSERT,UPDATE,DELETE ON app.* TO 'app'@'%';

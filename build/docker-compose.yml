@@ -1,5 +1,14 @@
 version: '2'
 services:
+  db:
+    image: db
+    container_name: db
+    build: db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      TZ: "UTC"
+    ports:
+      - "127.0.0.1:3307:3307"
   api:
     image: api
     container_name: api
