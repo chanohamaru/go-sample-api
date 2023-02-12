@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	"github.com/chanohamaru/go-sample-api/controller"
+	"github.com/chanohamaru/go-sample-api/model/repository"
 )
 
-var tc = controller.NewTodoController()
+var tr = repository.NewTodoRepository()
+var tc = controller.NewTodoController(tr)
 var ro = controller.NewRouter(tc)
 
 func main() {
