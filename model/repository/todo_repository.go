@@ -10,6 +10,7 @@ import (
 
 type TodoRepository interface {
 	GetTodos() (todos []entity.TodoEntity, err error)
+	InsertTodo(todo entity.TodoEntity) (id int, err error)
 }
 
 type todoRepository struct {
@@ -38,5 +39,15 @@ func (tr *todoRepository) GetTodos() (todos []entity.TodoEntity, err error) {
 		todos = append(todos, todo)
 	}
 
+	return
+}
+
+func (tr *todoRepository) InsertTodo(todo entity.TodoEntity) (id int, err error) {
+	_, err = Db.Exec("INSERT INTO todo (title, content) VALUES (?, ?)", todo.Title, todo.Content)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = Db.QueryRow("SELECT id FROM todo ORDER BY id DESC LIMIT 1").Scan(&id)
 	return
 }

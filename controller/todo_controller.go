@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/chanohamaru/go-sample-api/controller/dto"
+	"github.com/chanohamaru/go-sample-api/model/entity"
 	"github.com/chanohamaru/go-sample-api/model/repository"
 )
 
@@ -44,6 +46,19 @@ func (tc *todoController) GetTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *todoController) PostTodo(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "applivation/json")
-	fmt.Fprintf(w, "post todo")
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+	var todoRequest dto.TodoRequest
+	json.Unmarshal(body, &todoRequest)
+
+	todo := entity.TodoEntity{Title: todoRequest.Title, Content: todoRequest.Content}
+	id, err := tc.tr.InsertTodo(todo)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Location", r.Host+r.URL.Path+strconv.Itoa(id))
+	w.WriteHeader(201)
+	fmt.Fprintf(w, r.Host+r.URL.Path+strconv.Itoa(id))
 }
