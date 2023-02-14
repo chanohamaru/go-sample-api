@@ -11,6 +11,7 @@ import (
 type TodoRepository interface {
 	GetTodos() (todos []entity.TodoEntity, err error)
 	InsertTodo(todo entity.TodoEntity) (id int, err error)
+	DeleteTodo(id int) (err error)
 }
 
 type todoRepository struct {
@@ -49,5 +50,10 @@ func (tr *todoRepository) InsertTodo(todo entity.TodoEntity) (id int, err error)
 		return
 	}
 	err = Db.QueryRow("SELECT id FROM todo ORDER BY id DESC LIMIT 1").Scan(&id)
+	return
+}
+
+func (tr *todoRepository) DeleteTodo(id int) (err error) {
+	_, err = Db.Exec("DELETE FROM todo WHERE id = ?", id)
 	return
 }

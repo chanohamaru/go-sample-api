@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"path"
 	"strconv"
 
 	"github.com/chanohamaru/go-sample-api/controller/dto"
@@ -13,6 +14,7 @@ import (
 type TodoController interface {
 	GetTodos(w http.ResponseWriter, r *http.Request)
 	PostTodo(w http.ResponseWriter, r *http.Request)
+	DeleteTodo(w http.ResponseWriter, r *http.Request)
 }
 
 type todoController struct {
@@ -59,4 +61,20 @@ func (tc *todoController) PostTodo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Location", r.Host+r.URL.Path+strconv.Itoa(id))
 	w.WriteHeader(201)
+}
+
+func (tc *todoController) DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	todoId, err := strconv.Atoi(path.Base((r.URL.Path)))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	err = tc.tr.DeleteTodo(todoId)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.WriteHeader(204)
 }
