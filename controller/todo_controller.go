@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -60,5 +59,4 @@ func (tc *todoController) PostTodo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Location", r.Host+r.URL.Path+strconv.Itoa(id))
 	w.WriteHeader(201)
-	fmt.Fprintf(w, r.Host+r.URL.Path+strconv.Itoa(id))
 }
