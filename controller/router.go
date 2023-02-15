@@ -19,6 +19,8 @@ func (ro *router) HandleTodosRequest(w http.ResponseWriter, r *http.Request) {
 		ro.tc.GetTodos(w, r)
 	case "POST":
 		ro.tc.PostTodo(w, r)
+	case "PUT":
+		ro.tc.PutTodo(w, r)
 	case "DELETE":
 		ro.tc.DeleteTodo(w, r)
 	default:

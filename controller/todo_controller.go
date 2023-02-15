@@ -14,6 +14,7 @@ import (
 type TodoController interface {
 	GetTodos(w http.ResponseWriter, r *http.Request)
 	PostTodo(w http.ResponseWriter, r *http.Request)
+	PutTodo(w http.ResponseWriter, r *http.Request)
 	DeleteTodo(w http.ResponseWriter, r *http.Request)
 }
 
@@ -61,6 +62,28 @@ func (tc *todoController) PostTodo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Location", r.Host+r.URL.Path+strconv.Itoa(id))
 	w.WriteHeader(201)
+}
+
+func (tc *todoController) PutTodo(w http.ResponseWriter, r *http.Request) {
+	todoId, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+	var todoRequest dto.TodoRequest
+	json.Unmarshal(body, &todoRequest)
+
+	todo := entity.TodoEntity{Id: todoId, Title: todoRequest.Title, Content: todoRequest.Content}
+	err = tc.tr.UpdateTodo(todo)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.WriteHeader(204)
 }
 
 func (tc *todoController) DeleteTodo(w http.ResponseWriter, r *http.Request) {

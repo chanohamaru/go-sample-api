@@ -11,6 +11,7 @@ import (
 type TodoRepository interface {
 	GetTodos() (todos []entity.TodoEntity, err error)
 	InsertTodo(todo entity.TodoEntity) (id int, err error)
+	UpdateTodo(todo entity.TodoEntity) (err error)
 	DeleteTodo(id int) (err error)
 }
 
@@ -50,6 +51,11 @@ func (tr *todoRepository) InsertTodo(todo entity.TodoEntity) (id int, err error)
 		return
 	}
 	err = Db.QueryRow("SELECT id FROM todo ORDER BY id DESC LIMIT 1").Scan(&id)
+	return
+}
+
+func (tc *todoRepository) UpdateTodo(todo entity.TodoEntity) (err error) {
+	_, err = Db.Exec("UPDATE todo SET title = ?, content = ? WHERE id = ?", todo.Title, todo.Content, todo.Id)
 	return
 }
 
